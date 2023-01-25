@@ -1,22 +1,26 @@
 import express, { Request, Response, } from 'express';
 import country from "../mongo-models/country-schema";
 export const router = express.Router();
+import Notification from "../model/errorHelper";
+import authenticator from '../middleware/authenticator';
 
 
 
 // Post api --------------------------------------------------------------------------------------------------------
 router.post("/create", async (req: Request, res: Response) => {
-   
+
     try {
+        const name = req.body.Name
+         const code= req.body.Code
         const user = await country.create({
-            Name: req.body.Name,
-            Code: req.body.Code,
-            InActive: req.body.Inactive,
+            Name: name.charAt(0).toUpperCase() + name.slice(1),
+            Code: code.toUpperCase(),
             IsActive: req.body.IsActive
         });
         res.json(user);
-    } catch (error) {    
-        res.status(500).send("Internal Server Error");
+    } catch (error) {
+        console.log(error);
+        Notification.InternalError(req, res, error);
     }
 });
 
@@ -33,7 +37,7 @@ router.get("/", async (req: Request, res: Response) => {
     }
     catch (error) {
         console.log(error);
-        res.status(500).send("Internal server Error");
+        Notification.InternalError(req, res, error);
     }
 
 })
@@ -43,32 +47,29 @@ router.get("/", async (req: Request, res: Response) => {
 router.put("/update/:id", async (req: Request, res: Response) => {
     try {
         const {
+
             Name,
             Code,
-            InActive,
             IsActive,
         } = req.body;
-        
+
         const newUser: any = {
             Name: Name,
             Code: Code,
-            InActive: InActive,
             IsActive: IsActive
         }
 
         let user = await country.findById(req.params.id);
         if (!user) {
             console.log(user);
-            return  res.status(404).send("User not Found");
-            // return Error.NotFound(req, res, onmessage);
+            return Notification.NotFound(req, res, onmessage);
         }
         user = await country.findByIdAndUpdate(req.params.id, { $set: newUser }, { new: true });
         res.json(user);
     }
     catch (error) {
         console.log(error);
-        res.status(500).send("Internal server Error");
-        // Error.InternalError(req, res, error);
+        Notification.InternalError(req, res, error);
 
     }
 });
@@ -78,15 +79,14 @@ router.get("/:id", async (req: Request, res: Response) => {
     try {
         let user = await country.findById(req.params.id);
         if (!user) {
-            return res.status(404).send("not found");
+            return Notification.NotFound(req, res, onmessage);
         }
-        // user = await User.findById({Success: "});
         res.json(user);
 
     }
     catch (error) {
         console.log(error);
-        res.status(500).send("Internal server Error");
+        Notification.InternalError(req, res, error);
     }
 
 })
@@ -96,13 +96,13 @@ router.delete("/delete/:id", async (req: Request, res: Response) => {
     try {
         let user = await country.findByIdAndRemove(req.params.id);
         if (!user) {
-            return res.status(404).send("not found");
+            return Notification.NotFound(req, res, onmessage);
         }
         res.json(user);
     }
     catch (error) {
         console.log(error);
-        res.status(500).send("Internal server Error");
+        Notification.InternalError(req, res, error);
     }
 })
 

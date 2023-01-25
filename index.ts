@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import router from './src/routes/country';
 import stateRouter from './src/routes/state';
 
+
 const mongoURL = 'mongodb://127.0.0.1:27017/crud'
 
 mongoose.connect(mongoURL, () => {
@@ -15,6 +16,7 @@ const app = express()
 const PORT = 8000;
 app.use(express.json());
 app.use(cors())
+
 
 
 app.use("/state", stateRouter);
