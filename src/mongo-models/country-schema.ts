@@ -11,7 +11,12 @@ const countrySchema = new Schema({
         // required:true
     },
     IsActive: {
-        type: Boolean
+        type:String
+    }, 
+    deleted: {
+        type: Boolean, 
+        index: true,
+        default: false 
     }
 })
 

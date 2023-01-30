@@ -3,6 +3,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import router from './src/routes/country';
 import stateRouter from './src/routes/state';
+import cityRouter from './src/routes/city';
+
 
 
 const mongoURL = 'mongodb://127.0.0.1:27017/crud'
@@ -20,6 +22,7 @@ app.use(cors())
 
 
 app.use("/state", stateRouter);
+app.use("/city", cityRouter)
 app.use("/", router);
 
 

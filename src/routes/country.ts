@@ -11,7 +11,7 @@ router.post("/create", async (req: Request, res: Response) => {
 
     try {
         const name = req.body.Name
-         const code= req.body.Code
+        const code = req.body.Code
         const user = await country.create({
             Name: name.charAt(0).toUpperCase() + name.slice(1),
             Code: code.toUpperCase(),
@@ -31,7 +31,7 @@ router.get("/", async (req: Request, res: Response) => {
     try {
         let countrys;
 
-        countrys = await country.find({});
+        countrys = await country.find({ deleted: false });
         res.json(countrys);
 
     }
@@ -94,10 +94,14 @@ router.get("/:id", async (req: Request, res: Response) => {
 // Delete api -----------------------------------------------------------------------------------------------------
 router.delete("/delete/:id", async (req: Request, res: Response) => {
     try {
-        let user = await country.findByIdAndRemove(req.params.id);
+        const newUser: any = {
+            deleted: true
+        }
+        let user = await country.findById(req.params.id);
         if (!user) {
             return Notification.NotFound(req, res, onmessage);
         }
+        user = await country.findByIdAndUpdate(req.params.id, { $set: newUser }, { new: true });
         res.json(user);
     }
     catch (error) {

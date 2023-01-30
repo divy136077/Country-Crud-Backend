@@ -1,17 +1,17 @@
 import express, { Request, Response, } from 'express';
-import state from "../mongo-models/state-schema";
-export const stateRouter = express.Router();
+export const cityRouter = express.Router();
 import Notification from "../model/errorHelper";
+import city from '../mongo-models/city-schema';
 
 
 // Get api ----------------------------------------------------------------------------------------------------------
 
-stateRouter.get("/", async (req: Request, res: Response) => {
+cityRouter.get("/", async (req: Request, res: Response) => {
     try {
-        let states;
+        let citys;
 
-        states = await state.find({ deleted: false});
-        res.json(states);
+        citys = await city.find({ deleted: false });
+        res.json(citys);
 
     }
     catch (error) {
@@ -22,12 +22,13 @@ stateRouter.get("/", async (req: Request, res: Response) => {
 })
 
 // Post api --------------------------------------------------------------------------------------------------------
-stateRouter.post("/create", async (req: Request, res: Response) => {
+cityRouter.post("/create", async (req: Request, res: Response) => {
     try {
-        const statename = req.body.StateName
-        const data = await state.create({
+        const CityName = req.body.CityName
+        const data = await city.create({
             CountryName: req.body.CountryName,
-            StateName: statename.charAt(0).toUpperCase() + statename.slice(1),
+            StateName: req.body.StateName,
+            CityName: CityName.charAt(0).toUpperCase() + CityName.slice(1),
             IsActive: req.body.IsActive
         });
 
@@ -37,30 +38,31 @@ stateRouter.post("/create", async (req: Request, res: Response) => {
     }
 });
 
-
 // Put (edit) api ----------------------------------------------------------------------------------------------------
 
-stateRouter.put("/delete/:id", async (req: Request, res: Response) => {
+cityRouter.put("/update/:id", async (req: Request, res: Response) => {
     try {
         const {
             CountryName,
             StateName,
+            CityName,
             IsActive,
         } = req.body;
 
         const newUser: any = {
             CountryName: CountryName,
             StateName: StateName,
+            CityName: CityName,
             IsActive: IsActive
         }
 
-        let user = await state.findById(req.params.id);
+        let user = await city.findById(req.params.id);
         if (!user) {
             console.log(user);
             // return  res.status(404).send("User not Found");
             return Notification.NotFound(req, res, onmessage);
         }
-        user = await state.findByIdAndUpdate(req.params.id, { $set: newUser }, { new: true });
+        user = await city.findByIdAndUpdate(req.params.id, { $set: newUser }, { new: true });
         res.json(user);
     }
     catch (error) {
@@ -71,14 +73,14 @@ stateRouter.put("/delete/:id", async (req: Request, res: Response) => {
 });
 
 // GetByID api -------------------------------------------------------------------------------------------------------------
-stateRouter.get("/:id", async (req: Request, res: Response) => {
+cityRouter.get("/:id", async (req: Request, res: Response) => {
     try {
-        let user = await state.findById(req.params.id);
+        let user = await city.findById(req.params.id);
         if (!user) {
             // return res.status(404).send("not found");
             return Notification.NotFound(req, res, onmessage);
         }
-        // user = await User.findById({Success: "});
+
         res.json(user);
 
     }
@@ -90,18 +92,19 @@ stateRouter.get("/:id", async (req: Request, res: Response) => {
 })
 
 // Delete api -----------------------------------------------------------------------------------------------------
-stateRouter.delete("/delete/:id", async (req: Request, res: Response) => {
+cityRouter.delete("/delete/:id", async (req: Request, res: Response) => {
     try {
+
 
         const newUser: any = {
             deleted: true
         }
-        let user = await state.findById(req.params.id);
+        let user = await city.findById(req.params.id);
         if (!user) {
             // return res.status(404).send("not found");
             return Notification.NotFound(req, res, onmessage);
         }
-        user = await state.findByIdAndUpdate(req.params.id, { $set: newUser }, { new: true });
+        user = await city.findByIdAndUpdate(req.params.id, { $set: newUser }, { new: true });
         res.json(user);
     }
     catch (error) {
@@ -111,4 +114,7 @@ stateRouter.delete("/delete/:id", async (req: Request, res: Response) => {
 })
 
 
-export default stateRouter;
+
+
+
+export default cityRouter;
