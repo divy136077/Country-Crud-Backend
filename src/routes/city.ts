@@ -55,7 +55,8 @@ cityRouter.put("/update/:id", async (req: Request, res: Response) => {
             CityName: CityName,
             IsActive: IsActive
         }
-
+        console.log("hi", newUser);
+        
         let user = await city.findById(req.params.id);
         if (!user) {
             console.log(user);

@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import router from './src/routes/country';
 import stateRouter from './src/routes/state';
 import cityRouter from './src/routes/city';
+import { userRouter } from './src/routes/user';
 
 
 
@@ -20,7 +21,7 @@ app.use(express.json());
 app.use(cors())
 
 
-
+app.use("/user",userRouter)
 app.use("/state", stateRouter);
 app.use("/city", cityRouter)
 app.use("/", router);
