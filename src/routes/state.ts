@@ -10,7 +10,9 @@ stateRouter.get("/", async (req: Request, res: Response) => {
     try {
         let states;
 
-        states = await state.find({ deleted: false});
+        let filter:any = { deleted : false }
+        !!req.header('countryName') && (filter.CountryName = req.header('countryName'))
+        states = await state.find(filter);
         res.json(states);
 
     }
