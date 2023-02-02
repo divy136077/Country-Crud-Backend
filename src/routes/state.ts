@@ -40,7 +40,7 @@ stateRouter.post("/create", async (req: Request, res: Response) => {
 
 // Put (edit) api ----------------------------------------------------------------------------------------------------
 
-stateRouter.put("/delete/:id", async (req: Request, res: Response) => {
+stateRouter.put("/update/:id", async (req: Request, res: Response) => {
     try {
         const {
             CountryName,
