@@ -8,7 +8,7 @@ declare var path: any
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, '../BACKEND/image/DP/')
+      cb(null, '../frontend/COUNTRY/src/assets/image')
     },
     filename: function (req, file, cb) {
       cb(null, file.originalname) 
@@ -23,6 +23,8 @@ userRouter.post("/create",upload,  async (req: Request, res: Response) => {
 
     try {
         const Name = req.body.Name
+        console.log(req.file?.filename)
+        console.log(req.body.Email)
 
         const data = await user.create({
             Name: Name.charAt(0).toUpperCase() + Name.slice(1),
