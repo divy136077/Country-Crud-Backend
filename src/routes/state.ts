@@ -10,7 +10,9 @@ stateRouter.get("/", async (req: Request, res: Response) => {
     try {
         let states;
 
-        states = await state.find({ deleted: false});
+        let filter:any = { deleted : false }
+        !!req.header('countryName') && (filter.CountryName = req.header('countryName'))
+        states = await state.find(filter);
         res.json(states);
 
     }
@@ -24,6 +26,7 @@ stateRouter.get("/", async (req: Request, res: Response) => {
 // Post api --------------------------------------------------------------------------------------------------------
 stateRouter.post("/create", async (req: Request, res: Response) => {
     try {
+       
         const statename = req.body.StateName
         const data = await state.create({
             CountryName: req.body.CountryName,
@@ -40,7 +43,7 @@ stateRouter.post("/create", async (req: Request, res: Response) => {
 
 // Put (edit) api ----------------------------------------------------------------------------------------------------
 
-stateRouter.put("/delete/:id", async (req: Request, res: Response) => {
+stateRouter.put("/update/:id", async (req: Request, res: Response) => {
     try {
         const {
             CountryName,
