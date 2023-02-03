@@ -15,7 +15,8 @@ const userSchema = new Schema({
 
     },
     IsActive: {
-        type: String
+        type: String,
+        
     },
     Image: {
         type: String,

@@ -11,13 +11,24 @@ router.post("/create", async (req: Request, res: Response) => {
 
     try {
         const name = req.body.Name
+        console.log("hi", name);
+        
+        let users = await country.findOne({  Name: name.charAt(0).toUpperCase() + name.slice(1) });
+        console.log("udu", users);
+        
+        if (users) {
+          return res
+            .status(400)
+            .json({ error: "A User with the same  already exists." });
+        }else{
+        const name = req.body.Name
         const code = req.body.Code
         const user = await country.create({
             Name: name.charAt(0).toUpperCase() + name.slice(1),
             Code: code.toUpperCase(),
             IsActive: req.body.IsActive
         });
-        res.json(user);
+        res.json(user);}
     } catch (error) {
         console.log(error);
         Notification.InternalError(req, res, error);
@@ -46,6 +57,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 router.put("/update/:id", async (req: Request, res: Response) => {
     try {
+    
         const {
 
             Name,

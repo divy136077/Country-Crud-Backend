@@ -1,4 +1,4 @@
-import express, { Request, Response, } from 'express';
+import express, { request, Request, Response, } from 'express';
 export const userRouter = express.Router();
 import Notification from "../model/errorHelper";
 import user from '../mongo-models/user-schema';
@@ -8,20 +8,31 @@ declare var path: any
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, '../frontend/COUNTRY/src/assets/image')
+        cb(null, '../frontend/COUNTRY/src/assets/image')
     },
     filename: function (req, file, cb) {
-      cb(null, file.originalname) 
+        cb(null, file.originalname)
     }
-  })
+})
 
-const upload = multer({ storage: storage }).single('Image');
+const upload = multer({ storage: storage, limits: { fileSize: 5242880 }, }).single('Image');
+// if (!upload) {
+//      Notification.BadRequest(req, res, onmessage);
+// }
+
+
 
 // Post api --------------------------------------------------------------------------------------------------------
-userRouter.post("/create",upload,  async (req: Request, res: Response) => {
+userRouter.post("/create", upload, async (req: Request, res: Response) => {
 
 
     try {
+        let email = await user.findOne({ Email: req.body.Email });
+        if (email) {
+            return res
+                .status(400)
+                .json({ error: "A User with the same email already exists." });
+        }
         const Name = req.body.Name
         console.log(req.file?.filename)
         console.log(req.body.Email)
@@ -59,7 +70,7 @@ userRouter.get("/", async (req: Request, res: Response) => {
 })
 // Put (edit) api ----------------------------------------------------------------------------------------------------
 
-userRouter.put("/update/:id",upload, async (req: Request, res: Response) => {
+userRouter.put("/update/:id", upload, async (req: Request, res: Response) => {
     try {
         const Name = req.body.Name
         const newUser: any = {
@@ -70,7 +81,7 @@ userRouter.put("/update/:id",upload, async (req: Request, res: Response) => {
             Dob: req.body.Dob,
             IsActive: req.body.IsActive
         }
-      
+
         let putUser = await user.findById(req.params.id);
         if (!putUser) {
             // return  res.status(404).send("User not Found");
@@ -80,7 +91,7 @@ userRouter.put("/update/:id",upload, async (req: Request, res: Response) => {
         res.json(putUser);
     }
     catch (error) {
-        console.log("hihi",error);
+        console.log("hihi", error);
         Notification.InternalError(req, res, error);
 
     }

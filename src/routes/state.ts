@@ -26,6 +26,7 @@ stateRouter.get("/", async (req: Request, res: Response) => {
 // Post api --------------------------------------------------------------------------------------------------------
 stateRouter.post("/create", async (req: Request, res: Response) => {
     try {
+       
         const statename = req.body.StateName
         const data = await state.create({
             CountryName: req.body.CountryName,
