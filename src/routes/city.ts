@@ -10,7 +10,7 @@ cityRouter.get("/", async (req: Request, res: Response) => {
     try {
         let citys;
 
-        citys = await city.find({ deleted: false });
+        citys = await city.find({ Status: { $ne: "2" } });
         res.json(citys);
 
     }
@@ -29,7 +29,7 @@ cityRouter.post("/create", async (req: Request, res: Response) => {
             CountryName: req.body.CountryName,
             StateName: req.body.StateName,
             CityName: CityName.charAt(0).toUpperCase() + CityName.slice(1),
-            IsActive: req.body.IsActive
+            Status: req.body.Status
         });
 
         res.json(data);
@@ -46,14 +46,14 @@ cityRouter.put("/update/:id", async (req: Request, res: Response) => {
             CountryName,
             StateName,
             CityName,
-            IsActive,
+            Status,
         } = req.body;
 
         const newUser: any = {
             CountryName: CountryName,
             StateName: StateName,
             CityName: CityName,
-            IsActive: IsActive
+            Status: Status
         }
         console.log("hi", newUser);
         
@@ -98,7 +98,7 @@ cityRouter.delete("/delete/:id", async (req: Request, res: Response) => {
 
 
         const newUser: any = {
-            deleted: true
+            Status: "2"
         }
         let user = await city.findById(req.params.id);
         if (!user) {

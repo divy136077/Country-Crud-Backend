@@ -10,14 +10,9 @@ const countrySchema = new Schema({
         type: String,
         // required:true
     },
-    IsActive: {
+    Status:{
         type:String
-    }, 
-    deleted: {
-        type: Boolean, 
-        index: true,
-        default: false 
-    }
+    },
 })
 
 const country = mongoose.model("country", countrySchema)

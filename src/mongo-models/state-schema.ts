@@ -9,14 +9,9 @@ const stateSchema = new Schema({
         type:String,
         required:true
     },
-    IsActive:{
+    Status:{
         type:String
     },
-    deleted: {
-         type: Boolean, 
-         index: true,
-         default: false 
-    }
 })
 
 const state = mongoose.model( "state" , stateSchema )

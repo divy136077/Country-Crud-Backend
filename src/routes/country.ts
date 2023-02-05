@@ -26,7 +26,7 @@ router.post("/create", async (req: Request, res: Response) => {
         const user = await country.create({
             Name: name.charAt(0).toUpperCase() + name.slice(1),
             Code: code.toUpperCase(),
-            IsActive: req.body.IsActive
+            Status: req.body.Status
         });
         res.json(user);}
     } catch (error) {
@@ -42,7 +42,7 @@ router.get("/", async (req: Request, res: Response) => {
     try {
         let countrys;
 
-        countrys = await country.find({ deleted: false });
+        countrys = await country.find({ Status: { $ne: "2" } });
         res.json(countrys);
 
     }
@@ -62,13 +62,13 @@ router.put("/update/:id", async (req: Request, res: Response) => {
 
             Name,
             Code,
-            IsActive,
+            Status,
         } = req.body;
 
         const newUser: any = {
             Name: Name,
             Code: Code,
-            IsActive: IsActive
+            Status: Status
         }
 
         let user = await country.findById(req.params.id);
@@ -107,7 +107,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 router.delete("/delete/:id", async (req: Request, res: Response) => {
     try {
         const newUser: any = {
-            deleted: true
+            Status: "2"
         }
         let user = await country.findById(req.params.id);
         if (!user) {

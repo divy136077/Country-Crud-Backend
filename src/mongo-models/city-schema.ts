@@ -14,14 +14,9 @@ const citySchema = new Schema({
         type:String,
         required:true
     },
-    IsActive:{
+    Status:{
         type:String
     },
-    deleted: {
-        type: Boolean, 
-        index: true,
-        default: false 
-   }
 })
 
 const city = mongoose.model( "city" , citySchema )
