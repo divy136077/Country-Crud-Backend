@@ -27,7 +27,7 @@ userRouter.post("/create", upload, async (req: Request, res: Response) => {
 
 
     try {
-        let email = await user.findOne({ Email: req.body.Email });
+        let email = await user.findOne({ Email: req.body.Email, Status: { $ne: "2" } });
         if (email) {
             return res
                 .status(400)
