@@ -5,6 +5,7 @@ import router from './src/routes/country';
 import stateRouter from './src/routes/state';
 import cityRouter from './src/routes/city';
 import { userRouter } from './src/routes/user';
+import dashboardRouter from './src/routes/deshboard';
 
 
 
@@ -20,7 +21,8 @@ const PORT = 8000;
 app.use(express.json());
 app.use(cors())
 
-
+app.use(express.static('public'));
+app.use("/dashboard", dashboardRouter)
 app.use("/user",userRouter)
 app.use("/state", stateRouter);
 app.use("/city", cityRouter)

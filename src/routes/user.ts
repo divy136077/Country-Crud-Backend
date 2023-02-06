@@ -43,7 +43,7 @@ userRouter.post("/create", upload, async (req: Request, res: Response) => {
             Number: req.body.Number,
             Image: req.file?.filename,
             Dob: req.body.Dob,
-            IsActive: req.body.IsActive
+            Status: req.body.Status
         });
         console.log(data);
         res.json(data);
@@ -58,7 +58,7 @@ userRouter.get("/", async (req: Request, res: Response) => {
     try {
         let users;
 
-        users = await user.find({ deleted: false });
+        users = await user.find({ Status: { $ne: "2" } });
         res.json(users);
 
     }
@@ -79,7 +79,7 @@ userRouter.put("/update/:id", upload, async (req: Request, res: Response) => {
             Number: req.body.Number,
             Image: req.file?.filename,
             Dob: req.body.Dob,
-            IsActive: req.body.IsActive
+             Status: req.body. Status
         }
 
         let putUser = await user.findById(req.params.id);
@@ -122,7 +122,7 @@ userRouter.delete("/delete/:id", async (req: Request, res: Response) => {
 
 
         const newUser: any = {
-            deleted: true
+           Status: "2"
         }
         let putUser = await user.findById(req.params.id);
         if (!putUser) {
