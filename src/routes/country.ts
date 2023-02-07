@@ -52,7 +52,7 @@ router.get("/", async (req: Request, res: Response) => {
         // searchobj.Status = { $ne: '2' }
         // console.log('2',searchobj);
 
-        countrys = await country.find(filters || {Status:{$ne:'2'}});
+        countrys = await country.find({Status:{$ne:'2'}, ...filters});
         res.json(countrys);
         console.log('3' ,countrys);
 
