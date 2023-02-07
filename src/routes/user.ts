@@ -9,6 +9,7 @@ declare var path: any
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, '../frontend/COUNTRY/src/assets/image')
+        // cb(null, '../BACKEND/public/images')
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname)
@@ -34,8 +35,7 @@ userRouter.post("/create", upload, async (req: Request, res: Response) => {
                 .json({ error: "A User with the same email already exists." });
         }
         const Name = req.body.Name
-        console.log(req.file?.filename)
-        console.log(req.body.Email)
+       
 
         const data = await user.create({
             Name: Name.charAt(0).toUpperCase() + Name.slice(1),
@@ -45,7 +45,7 @@ userRouter.post("/create", upload, async (req: Request, res: Response) => {
             Dob: req.body.Dob,
             Status: req.body.Status
         });
-        console.log(data);
+        
         res.json(data);
     } catch (error) {
         Notification.InternalError(req, res, error);
@@ -63,7 +63,7 @@ userRouter.get("/", async (req: Request, res: Response) => {
 
     }
     catch (error) {
-        console.log(error);
+        
         Notification.InternalError(req, res, error);
     }
 
@@ -91,7 +91,7 @@ userRouter.put("/update/:id", upload, async (req: Request, res: Response) => {
         res.json(putUser);
     }
     catch (error) {
-        console.log("hihi", error);
+      
         Notification.InternalError(req, res, error);
 
     }
@@ -110,7 +110,7 @@ userRouter.get("/:id", async (req: Request, res: Response) => {
 
     }
     catch (error) {
-        console.log(error);
+       
         Notification.InternalError(req, res, error);
     }
 
@@ -133,7 +133,7 @@ userRouter.delete("/delete/:id", async (req: Request, res: Response) => {
         res.json(putUser);
     }
     catch (error) {
-        console.log(error);
+        
         Notification.InternalError(req, res, error);
     }
 })

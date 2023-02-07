@@ -15,7 +15,8 @@ const authenticator = (req: any, res: any, next: any) => {
         next();
     } catch (error) {
         res.status(401).json({error:"Please validate using valid token"})
-    } console.log(data.user);
+    } 
+   
     
 }
 

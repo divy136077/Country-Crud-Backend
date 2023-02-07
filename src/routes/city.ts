@@ -15,7 +15,7 @@ cityRouter.get("/", async (req: Request, res: Response) => {
 
     }
     catch (error) {
-        console.log(error);
+        
         Notification.InternalError(req, res, error);
     }
 
@@ -55,11 +55,11 @@ cityRouter.put("/update/:id", async (req: Request, res: Response) => {
             CityName: CityName,
             Status: Status
         }
-        console.log("hi", newUser);
+        
         
         let user = await city.findById(req.params.id);
         if (!user) {
-            console.log(user);
+           
             // return  res.status(404).send("User not Found");
             return Notification.NotFound(req, res, onmessage);
         }
@@ -67,7 +67,7 @@ cityRouter.put("/update/:id", async (req: Request, res: Response) => {
         res.json(user);
     }
     catch (error) {
-        console.log(error);
+       
         Notification.InternalError(req, res, error);
 
     }
@@ -86,7 +86,7 @@ cityRouter.get("/:id", async (req: Request, res: Response) => {
 
     }
     catch (error) {
-        console.log(error);
+        
         Notification.InternalError(req, res, error);
     }
 
@@ -109,7 +109,7 @@ cityRouter.delete("/delete/:id", async (req: Request, res: Response) => {
         res.json(user);
     }
     catch (error) {
-        console.log(error);
+        
         Notification.InternalError(req, res, error);
     }
 })

@@ -17,7 +17,7 @@ stateRouter.get("/", async (req: Request, res: Response) => {
 
     }
     catch (error) {
-        console.log(error);
+      
         Notification.InternalError(req, res, error);
     }
 
@@ -59,7 +59,7 @@ stateRouter.put("/update/:id", async (req: Request, res: Response) => {
 
         let user = await state.findById(req.params.id);
         if (!user) {
-            console.log(user);
+           
             // return  res.status(404).send("User not Found");
             return Notification.NotFound(req, res, onmessage);
         }
@@ -67,7 +67,7 @@ stateRouter.put("/update/:id", async (req: Request, res: Response) => {
         res.json(user);
     }
     catch (error) {
-        console.log(error);
+       
         Notification.InternalError(req, res, error);
 
     }
@@ -86,7 +86,7 @@ stateRouter.get("/:id", async (req: Request, res: Response) => {
 
     }
     catch (error) {
-        console.log(error);
+        
         Notification.InternalError(req, res, error);
     }
 
@@ -108,7 +108,7 @@ stateRouter.delete("/delete/:id", async (req: Request, res: Response) => {
         res.json(user);
     }
     catch (error) {
-        console.log(error);
+       
         Notification.InternalError(req, res, error);
     }
 })
