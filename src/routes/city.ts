@@ -9,8 +9,10 @@ import city from '../mongo-models/city-schema';
 cityRouter.get("/", async (req: Request, res: Response) => {
     try {
         let citys;
+         const filters: any = req.query;
+        console.log("====",filters);
 
-        citys = await city.find({ Status: { $ne: "2" } });
+        citys = await city.find({ Status: { $ne: "2" }, ...filters });
         res.json(citys);
 
     }

@@ -3,7 +3,7 @@ import country from "../mongo-models/country-schema";
 export const router = express.Router();
 import Notification from "../model/errorHelper";
 import authenticator from '../middleware/authenticator';
-import { handleSearchValues } from '../model/config';
+
 
 
 
@@ -20,7 +20,7 @@ router.post("/create", async (req: Request, res: Response) => {
         if (users) {
             return res
                 .status(400)
-                .json({ error: "A User with the same Name already exists." });
+                .json({ error: "A Country with the same Name already exists." });
         } else {
             const name = req.body.Name
             const code = req.body.Code
@@ -44,17 +44,11 @@ router.get("/", async (req: Request, res: Response) => {
     try {
         let countrys;
         const filters: any = req.query;
-        console.log("====",filters);
-        
-        // const newFilters: any = handleSearchValues(filters)
-      
-        // let searchobj = filters;
-        // searchobj.Status = { $ne: '2' }
-        // console.log('2',searchobj);
+        console.log("====", filters);
 
-        countrys = await country.find({Status:{$ne:'2'}, ...filters});
+        countrys = await country.find({ Status: { $ne: '2' }, ...filters });
         res.json(countrys);
-        console.log('3' ,countrys);
+        console.log('3', countrys);
 
 
     }
@@ -137,7 +131,21 @@ router.get("/:id", async (req: Request, res: Response) => {
 })
 
 // Delete api -----------------------------------------------------------------------------------------------------
-router.delete("/delete/:id", async (req: Request, res: Response) => {
+router.put("/delete", async (req: Request, res: Response) => {
+
+    const data = req.body;
+    console.log("ddd", data.length, data[1]);
+
+    for (let i = 0; i < data.length; i++) {
+        var ID = data[i]
+        
+        
+        console.log('rr', ID);
+    }
+    
+
+
+
     try {
         const newUser: any = {
             Status: "2"

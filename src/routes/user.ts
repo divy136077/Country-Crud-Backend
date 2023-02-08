@@ -8,8 +8,8 @@ declare var path: any
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '../frontend/COUNTRY/src/assets/image')
-        // cb(null, '../BACKEND/public/images')
+        // cb(null, '../frontend/COUNTRY/src/assets/image')
+        cb(null, '../BACKEND/public/images')
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname)
@@ -57,8 +57,10 @@ userRouter.post("/create", upload, async (req: Request, res: Response) => {
 userRouter.get("/", async (req: Request, res: Response) => {
     try {
         let users;
+          const filters: any = req.query;
+        console.log("====",filters);
 
-        users = await user.find({ Status: { $ne: "2" } });
+        users = await user.find({ Status: { $ne: "2" }, ...filters });
         res.json(users);
 
     }
