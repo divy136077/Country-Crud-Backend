@@ -10,9 +10,13 @@ cityRouter.get("/", async (req: Request, res: Response) => {
     try {
         let citys;
          const filters: any = req.query;
+         let filter:any = {}
+         !!filters.CityName && (filter.CityName = filters.CityName)
+        !!filters.Status && (filter.Status = filters.Status )
+       
         console.log("====",filters);
 
-        citys = await city.find({ Status: { $ne: "2" }, ...filters });
+        citys = await city.find({ Status: { $ne: "2" }, ...filter });
         res.json(citys);
 
     }

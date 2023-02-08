@@ -9,12 +9,14 @@ import Notification from "../model/errorHelper";
 stateRouter.get("/", async (req: Request, res: Response) => {
     try {
         let states;
+        let filter:any = {}
         const filters: any = req.query;
+        !!filters.StateName && (filter.StateName = filters.StateName)
+        !!filters.Status && (filter.Status = filters.Status )
+        !!req.header('countryName') && (filter.CountryName = req.header('countryName'))
         console.log("====",filters);
 
-        let filter:any = { Status: { $ne: "2" } , ...filters }
-        // !!req.header('countryName') && (filter.CountryName = req.header('countryName'))
-        states = await state.find(filter);
+        states = await state.find({ Status: { $ne: "2" }, ...filter });
         res.json(states);
 
     }

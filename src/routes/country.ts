@@ -1,64 +1,57 @@
-import express, { Request, Response, } from 'express';
+import express, { Request, Response } from "express";
 import country from "../mongo-models/country-schema";
 export const router = express.Router();
 import Notification from "../model/errorHelper";
-import authenticator from '../middleware/authenticator';
-
-
-
+import authenticator from "../middleware/authenticator";
 
 // Post api --------------------------------------------------------------------------------------------------------
 router.post("/create", async (req: Request, res: Response) => {
+  try {
+    const name = req.body.Name;
 
-    try {
-        const name = req.body.Name
+    let users = await country.findOne({
+      Name: name.charAt(0).toUpperCase() + name.slice(1),
+      Status: { $ne: "2" },
+    });
 
-
-        let users = await country.findOne({ Name: name.charAt(0).toUpperCase() + name.slice(1) });
-
-
-        if (users) {
-            return res
-                .status(400)
-                .json({ error: "A Country with the same Name already exists." });
-        } else {
-            const name = req.body.Name
-            const code = req.body.Code
-            const user = await country.create({
-                Name: name.charAt(0).toUpperCase() + name.slice(1),
-                Code: code.toUpperCase(),
-                Status: req.body.Status
-            });
-            res.json(user);
-        }
-    } catch (error) {
-
-        Notification.InternalError(req, res, error);
+    if (users) {
+      return res
+        .status(400)
+        .json({ error: "A Country with the same Name already exists." });
+    } else {
+      const name = req.body.Name;
+      const code = req.body.Code;
+      const user = await country.create({
+        Name: name.charAt(0).toUpperCase() + name.slice(1),
+        Code: code.toUpperCase(),
+        Status: req.body.Status,
+      });
+      res.json(user);
     }
+  } catch (error) {
+    Notification.InternalError(req, res, error);
+  }
 });
-
 
 // Get api ----------------------------------------------------------------------------------------------------------
 
 router.get("/", async (req: Request, res: Response) => {
-    try {
-        let countrys;
-        const filters: any = req.query;
-        console.log("====", filters);
+  try {
+    let countrys;
+    let filter:any = {}
+    const filters: any = req.query;
+    !!filters.Name && (filter.Name = filters.Name)
+    !!filters.Status && (filter.Status = filters.Status )
+    
+    console.log("====", filters);
 
-        countrys = await country.find({ Status: { $ne: '2' }, ...filters });
-        res.json(countrys);
-        console.log('3', countrys);
-
-
-    }
-    catch (error) {
-
-        Notification.InternalError(req, res, error);
-    }
-
-})
-
+    countrys = await country.find({ Status: { $ne: "2" }, ...filter });
+    res.json(countrys);
+    console.log("3", countrys);
+  } catch (error) {
+    Notification.InternalError(req, res, error);
+  }
+});
 
 // router.get("/getAll", async (req: Request, res: Response) => {
 //     try {
@@ -71,7 +64,6 @@ router.get("/", async (req: Request, res: Response) => {
 //         res.json(countrys);
 //         console.log(countrys);
 
-
 //     }
 //     catch (error) {
 
@@ -83,84 +75,118 @@ router.get("/", async (req: Request, res: Response) => {
 // Put (edit) api ----------------------------------------------------------------------------------------------------
 
 router.put("/update/:id", async (req: Request, res: Response) => {
-    try {
+  try {
+    const { Name, Code, Status, id } = req.body;
 
-        const {
+    let users = await country.findOne({
+      Name: Name.charAt(0).toUpperCase() + Name.slice(1),
+      Status: { $ne: "2" },
+      _id: { $ne: id }
+    });
 
-            Name,
-            Code,
-            Status,
-        } = req.body;
+    if (users) {
+      return res
+        .status(400)
+        .json({ error: "A Country with the same Name already exists." });
+    } else {
+      const newUser: any = {
+        Name: Name,
+        Code: Code,
+        Status: Status,
+      };
 
-        const newUser: any = {
-            Name: Name,
-            Code: Code,
-            Status: Status
-        }
-
-        let user = await country.findById(req.params.id);
-        if (!user) {
-
-            return Notification.NotFound(req, res, onmessage);
-        }
-        user = await country.findByIdAndUpdate(req.params.id, { $set: newUser }, { new: true });
-        res.json(user);
+      let user = await country.findById(req.params.id);
+      if (!user) {
+        return Notification.NotFound(req, res, onmessage);
+      }
+      user = await country.findByIdAndUpdate(
+        req.params.id,
+        { $set: newUser },
+        { new: true }
+      );
+      res.json(user);
     }
-    catch (error) {
+  } catch (error) {
+    Notification.InternalError(req, res, error);
+  }
+});
 
-        Notification.InternalError(req, res, error);
-
+router.post("/update", async (req: Request, res: Response) => {
+    const { data, status } = req.body;
+    console.log("ddd", data.length, data[1]);
+  
+    try {
+      const newUser: any = {
+        Status: status,
+      };
+  
+      data.map(async (x: any) => {
+        let user = await country.findById(x);
+        if (!user) {
+          return Notification.NotFound(req, res, onmessage);
+        }
+        await country.findByIdAndUpdate(x, { $set: newUser }, { new: true });
+      });
+      res.json("Updated");
+    } catch (error) {
+      Notification.InternalError(req, res, error);
     }
 });
 
 // GetByID api -------------------------------------------------------------------------------------------------------------
 router.get("/:id", async (req: Request, res: Response) => {
-    try {
-        let user = await country.findById(req.params.id);
-        if (!user) {
-            return Notification.NotFound(req, res, onmessage);
-        }
-        res.json(user);
-
+  try {
+    let user = await country.findById(req.params.id);
+    if (!user) {
+      return Notification.NotFound(req, res, onmessage);
     }
-    catch (error) {
-
-        Notification.InternalError(req, res, error);
-    }
-
-})
+    res.json(user);
+  } catch (error) {
+    Notification.InternalError(req, res, error);
+  }
+});
 
 // Delete api -----------------------------------------------------------------------------------------------------
-router.put("/delete", async (req: Request, res: Response) => {
-
-    const data = req.body;
-    console.log("ddd", data.length, data[1]);
-
-    for (let i = 0; i < data.length; i++) {
-        var ID = data[i]
-        
-        
-        console.log('rr', ID);
+router.delete("/delete/:id", async (req: Request, res: Response) => {
+  try {
+    const newUser: any = {
+      Status: "2",
+    };
+    let user = await country.findById(req.params.id);
+    if (!user) {
+      return Notification.NotFound(req, res, onmessage);
     }
-    
+    user = await country.findByIdAndUpdate(
+      req.params.id,
+      { $set: newUser },
+      { new: true }
+    );
+    res.json(user);
+  } catch (error) {
+    Notification.InternalError(req, res, error);
+  }
+});
 
+router.post("/delete", async (req: Request, res: Response) => {
+  const data = req.body;
+  console.log("ddd", data.length, data[1]);
 
+  try {
+    const newUser: any = {
+      Status: "2",
+    };
 
-    try {
-        const newUser: any = {
-            Status: "2"
-        }
-        let user = await country.findById(req.params.id);
-        if (!user) {
-            return Notification.NotFound(req, res, onmessage);
-        }
-        user = await country.findByIdAndUpdate(req.params.id, { $set: newUser }, { new: true });
-        res.json(user);
-    }
-    catch (error) {
-
-        Notification.InternalError(req, res, error);
-    }
-})
+    data.map(async (x: any) => {
+      let user = await country.findById(x);
+      if (!user) {
+        return Notification.NotFound(req, res, onmessage);
+      }
+      await country.findByIdAndUpdate(x, { $set: newUser }, { new: true });
+    });
+    res.json("Deleted");
+  } catch (error) {
+    Notification.InternalError(req, res, error);
+  }
+});
 
 export default router;
