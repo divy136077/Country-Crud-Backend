@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import country from "../mongo-models/country-schema";
 export const router = express.Router();
 import Notification from "../model/errorHelper";
-import authenticator from "../middleware/authenticator";
+
 
 // Post api --------------------------------------------------------------------------------------------------------
 router.post("/create", async (req: Request, res: Response) => {
@@ -38,39 +38,22 @@ router.post("/create", async (req: Request, res: Response) => {
 router.get("/", async (req: Request, res: Response) => {
   try {
     let countrys;
-    let filter:any = {}
+    let filter: any = {}
     const filters: any = req.query;
     !!filters.Name && (filter.Name = filters.Name)
-    !!filters.Status && (filter.Status = filters.Status )
-    
-    console.log("====", filters);
+    !!filters.Status && (filter.Status = filters.Status)
+
+
 
     countrys = await country.find({ Status: { $ne: "2" }, ...filter });
     res.json(countrys);
-    console.log("3", countrys);
+
   } catch (error) {
     Notification.InternalError(req, res, error);
   }
 });
 
-// router.get("/getAll", async (req: Request, res: Response) => {
-//     try {
-//         // let countrys;
-//         // const filters: any = req.query;
-//         // const newFilters: any = handleSearchValues(filters)
-//         // console.log(newFilters);
 
-//        let countrys = await country.find({Status:{$ne:'2'}});
-//         res.json(countrys);
-//         console.log(countrys);
-
-//     }
-//     catch (error) {
-
-//         Notification.InternalError(req, res, error);
-//     }
-
-// })
 
 // Put (edit) api ----------------------------------------------------------------------------------------------------
 
@@ -111,26 +94,27 @@ router.put("/update/:id", async (req: Request, res: Response) => {
   }
 });
 
+// update multipal selected data for status 
 router.post("/update", async (req: Request, res: Response) => {
-    const { data, status } = req.body;
-    console.log("ddd", data.length, data[1]);
-  
-    try {
-      const newUser: any = {
-        Status: status,
-      };
-  
-      data.map(async (x: any) => {
-        let user = await country.findById(x);
-        if (!user) {
-          return Notification.NotFound(req, res, onmessage);
-        }
-        await country.findByIdAndUpdate(x, { $set: newUser }, { new: true });
-      });
-      res.json("Updated");
-    } catch (error) {
-      Notification.InternalError(req, res, error);
-    }
+  const { data, status } = req.body;
+
+
+  try {
+    const newUser: any = {
+      Status: status,
+    };
+
+    data.map(async (x: any) => {
+      let user = await country.findById(x);
+      if (!user) {
+        // return Notification.NotFound(req, res, onmessage);
+      }
+      await country.findByIdAndUpdate(x, { $set: newUser }, { new: true });
+    });
+    res.json("Updated");
+  } catch (error) {
+    Notification.InternalError(req, res, error);
+  }
 });
 
 // GetByID api -------------------------------------------------------------------------------------------------------------
@@ -167,9 +151,11 @@ router.delete("/delete/:id", async (req: Request, res: Response) => {
   }
 });
 
+// multipal selected data delete
+
 router.post("/delete", async (req: Request, res: Response) => {
   const data = req.body;
-  console.log("ddd", data.length, data[1]);
+
 
   try {
     const newUser: any = {
@@ -179,7 +165,7 @@ router.post("/delete", async (req: Request, res: Response) => {
     data.map(async (x: any) => {
       let user = await country.findById(x);
       if (!user) {
-        return Notification.NotFound(req, res, onmessage);
+        // return Notification.NotFound(req, res, onmessage);
       }
       await country.findByIdAndUpdate(x, { $set: newUser }, { new: true });
     });
