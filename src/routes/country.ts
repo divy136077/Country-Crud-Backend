@@ -4,7 +4,7 @@ export const router = express.Router();
 import Notification from "../model/errorHelper";
 
 
-// Post api --------------------------------------------------------------------------------------------------------
+// Post api 
 router.post("/create", async (req: Request, res: Response) => {
   try {
     const name = req.body.Name;
@@ -33,7 +33,7 @@ router.post("/create", async (req: Request, res: Response) => {
   }
 });
 
-// Get api ----------------------------------------------------------------------------------------------------------
+// Get api 
 
 router.get("/", async (req: Request, res: Response) => {
   try {
@@ -55,7 +55,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 
 
-// Put (edit) api ----------------------------------------------------------------------------------------------------
+// Put (edit) api 
 
 router.put("/update/:id", async (req: Request, res: Response) => {
   try {
@@ -117,7 +117,7 @@ router.post("/update", async (req: Request, res: Response) => {
   }
 });
 
-// GetByID api -------------------------------------------------------------------------------------------------------------
+// GetByID api 
 router.get("/:id", async (req: Request, res: Response) => {
   try {
     let user = await country.findById(req.params.id);
@@ -130,7 +130,7 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-// Delete api -----------------------------------------------------------------------------------------------------
+// Delete api
 router.delete("/delete/:id", async (req: Request, res: Response) => {
   try {
     const newUser: any = {

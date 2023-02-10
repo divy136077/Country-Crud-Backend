@@ -4,7 +4,7 @@ import Notification from "../model/errorHelper";
 import city from '../mongo-models/city-schema';
 
 
-// Get api ----------------------------------------------------------------------------------------------------------
+// Get api 
 
 cityRouter.get("/", async (req: Request, res: Response) => {
   try {
@@ -27,7 +27,7 @@ cityRouter.get("/", async (req: Request, res: Response) => {
 
 })
 
-// Post api --------------------------------------------------------------------------------------------------------
+// Post api 
 cityRouter.post("/create", async (req: Request, res: Response) => {
   try {
     const CityName = req.body.CityName
@@ -56,7 +56,7 @@ cityRouter.post("/create", async (req: Request, res: Response) => {
 });
 
 
-// Put (edit) api ----------------------------------------------------------------------------------------------------
+// Put (edit) api 
 
 cityRouter.put("/update/:id", async (req: Request, res: Response) => {
   try {
@@ -123,7 +123,7 @@ cityRouter.post("/update", async (req: Request, res: Response) => {
   }
 })
 
-// GetByID api -------------------------------------------------------------------------------------------------------------
+// GetByID api 
 cityRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     let user = await city.findById(req.params.id);
@@ -142,7 +142,7 @@ cityRouter.get("/:id", async (req: Request, res: Response) => {
 
 })
 
-// Delete api -----------------------------------------------------------------------------------------------------
+// Delete api 
 cityRouter.delete("/delete/:id", async (req: Request, res: Response) => {
   try {
     const newUser: any = {

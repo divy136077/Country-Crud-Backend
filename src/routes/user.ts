@@ -17,13 +17,11 @@ var storage = multer.diskStorage({
 })
 
 const upload = multer({ storage: storage, limits: { fileSize: 5242880 }, }).single('Image');
-// if (!upload) {
-//      Notification.BadRequest(req, res, onmessage);
-// }
 
 
 
-// Post api --------------------------------------------------------------------------------------------------------
+
+// Post api 
 userRouter.post("/create", upload, async (req: Request, res: Response) => {
 
 
@@ -63,7 +61,7 @@ userRouter.post("/create", upload, async (req: Request, res: Response) => {
   }
 });
 
-// Get api ----------------------------------------------------------------------------------------------------------
+// Get api 
 
 userRouter.get("/", async (req: Request, res: Response) => {
   try {
@@ -84,44 +82,35 @@ userRouter.get("/", async (req: Request, res: Response) => {
   }
 
 })
-// Put (edit) api ----------------------------------------------------------------------------------------------------
+// Put (edit) api 
+
 
 userRouter.put("/update/:id", upload, async (req: Request, res: Response) => {
   try {
-    // const Name = req.body.Name
-    const { Name, Status, id } = req.body;
-    let email = await user.findOne({ Email: req.body.Email, Status: { $ne: "2" }, _id: { $ne: id } });
-    if (email) {
-      return res
-        .status(400)
-        .json({ error: "A User with the same email already exists." });
-    }
-    else {
-
+      const Name = req.body.Name
       const newUser: any = {
-        Name: Name.charAt(0).toUpperCase() + Name.slice(1),
-        Email: req.body.Email,
-        Number: req.body.Number,
-        Image: req.file?.filename,
-        Dob: req.body.Dob,
-        Status: req.body.Status
-      };
+          Name: Name.charAt(0).toUpperCase() + Name.slice(1),
+          Email: req.body.Email,
+          Number: req.body.Number,
+          Image: req.file?.filename,
+          Dob: req.body.Dob,
+           Status: req.body. Status
+      }
 
       let putUser = await user.findById(req.params.id);
       if (!putUser) {
-        // return  res.status(404).send("User not Found");
-        return Notification.NotFound(req, res, onmessage);
+          return Notification.NotFound(req, res, onmessage);
       }
       putUser = await user.findByIdAndUpdate(req.params.id, { $set: newUser }, { new: true });
       res.json(putUser);
-    }
   }
   catch (error) {
-
-    Notification.InternalError(req, res, error);
+    
+      Notification.InternalError(req, res, error);
 
   }
 });
+
 
 // update multipal selected data for status
 
@@ -147,7 +136,7 @@ userRouter.post("/update", async (req: Request, res: Response) => {
   }
 });
 
-// GetByID api -------------------------------------------------------------------------------------------------------------
+// GetByID api 
 userRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     let putUser = await user.findById(req.params.id);
@@ -166,7 +155,7 @@ userRouter.get("/:id", async (req: Request, res: Response) => {
 
 })
 
-// Delete api -----------------------------------------------------------------------------------------------------
+// Delete api 
 userRouter.delete("/delete/:id", async (req: Request, res: Response) => {
   try {
 
@@ -188,7 +177,7 @@ userRouter.delete("/delete/:id", async (req: Request, res: Response) => {
   }
 });
 
-// multipal selected data delete--------------------------------------------------------------
+// multipal selected data delete
 
 userRouter.post("/delete", async (req: Request, res: Response) => {
   const data = req.body;

@@ -4,7 +4,7 @@ export const stateRouter = express.Router();
 import Notification from "../model/errorHelper";
 
 
-// Get api ----------------------------------------------------------------------------------------------------------
+// Get api 
 
 stateRouter.get("/", async (req: Request, res: Response) => {
   try {
@@ -27,7 +27,7 @@ stateRouter.get("/", async (req: Request, res: Response) => {
 
 })
 
-// Post api --------------------------------------------------------------------------------------------------------
+// Post api 
 stateRouter.post("/create", async (req: Request, res: Response) => {
   try {
 
@@ -56,7 +56,7 @@ stateRouter.post("/create", async (req: Request, res: Response) => {
 });
 
 
-// Put (edit) api ----------------------------------------------------------------------------------------------------
+// Put (edit) api 
 
 stateRouter.put("/update/:id", async (req: Request, res: Response) => {
   try {
@@ -103,7 +103,7 @@ stateRouter.put("/update/:id", async (req: Request, res: Response) => {
 
 
 
-// GetByID api -------------------------------------------------------------------------------------------------------------
+// GetByID api 
 stateRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     let user = await state.findById(req.params.id);
@@ -145,7 +145,7 @@ stateRouter.post("/update", async (req: Request, res: Response) => {
   }
 });
 
-// Delete api -----------------------------------------------------------------------------------------------------
+// Delete api 
 stateRouter.delete("/delete/:id", async (req: Request, res: Response) => {
   try {
 
