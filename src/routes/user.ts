@@ -9,7 +9,8 @@ declare var path: any
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     // cb(null, '../frontend/COUNTRY/src/assets/image')
-    cb(null, '../BACKEND/public/images')
+    // cb(null, '../BACKEND/public/images')
+    cb(null, './public/images')
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname)
@@ -88,21 +89,30 @@ userRouter.get("/", async (req: Request, res: Response) => {
 userRouter.put("/update/:id", upload, async (req: Request, res: Response) => {
   try {
       const Name = req.body.Name
-      const newUser: any = {
-          Name: Name.charAt(0).toUpperCase() + Name.slice(1),
-          Email: req.body.Email,
-          Number: req.body.Number,
-          Image: req.file?.filename,
-          Dob: req.body.Dob,
-           Status: req.body. Status
+
+      let USER = await user.findOne({ Email:req.body.Email , Status: { $ne: "2" }, _id: { $ne: req.params.id } });
+
+      if(USER){
+        return res.status(400)
+        .json({ error: "A User with the same Email already exists." });
+      } else {
+        const newUser: any = {
+            Name: Name.charAt(0).toUpperCase() + Name.slice(1),
+            Email: req.body.Email,
+            Number: req.body.Number,
+            Image: req.file?.filename,
+            Dob: req.body.Dob,
+             Status: req.body. Status
+        }
+  
+        let putUser = await user.findById(req.params.id);
+        if (!putUser) {
+            return Notification.NotFound(req, res, onmessage);
+        }
+        putUser = await user.findByIdAndUpdate(req.params.id, { $set: newUser }, { new: true });
+        res.json(putUser);
       }
 
-      let putUser = await user.findById(req.params.id);
-      if (!putUser) {
-          return Notification.NotFound(req, res, onmessage);
-      }
-      putUser = await user.findByIdAndUpdate(req.params.id, { $set: newUser }, { new: true });
-      res.json(putUser);
   }
   catch (error) {
     
