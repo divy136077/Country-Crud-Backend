@@ -6,6 +6,8 @@ import stateRouter from './src/routes/state';
 import cityRouter from './src/routes/city';
 import { userRouter } from './src/routes/user';
 import dashboardRouter from './src/routes/deshboard';
+import loginRouter from './src/routes/login';
+import menuRouter from './src/routes/menu-master';
 
 
 
@@ -23,7 +25,9 @@ app.use(cors())
 
 app.use(express.static('public'));
 app.use("/dashboard", dashboardRouter)
+app.use("/login", loginRouter);
 app.use("/user",userRouter)
+app.use("/menu",menuRouter)
 app.use("/state", stateRouter);
 app.use("/city", cityRouter)
 app.use("/", router);

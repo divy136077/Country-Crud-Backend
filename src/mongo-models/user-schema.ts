@@ -10,6 +10,9 @@ const userSchema = new Schema({
         type: String,
 
     },
+    Password:{
+        type:String,   
+    },
     Number: {
         type: Number,
 
@@ -21,8 +24,11 @@ const userSchema = new Schema({
         type: String,
     },
     Status:{
-        type:String
+        type:String,
     },
+    IsAdmin:{
+        type:Boolean,
+    }
 })
 
 const user = mongoose.model("user", userSchema)

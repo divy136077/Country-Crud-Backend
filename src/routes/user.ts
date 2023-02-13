@@ -3,14 +3,16 @@ export const userRouter = express.Router();
 import Notification from "../model/errorHelper";
 import user from '../mongo-models/user-schema';
 import multer = require('multer');
+import authenticator from '../middleware/authenticator';
+const bcrypt = require("bcryptjs");
 
 declare var path: any
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     // cb(null, '../frontend/COUNTRY/src/assets/image')
-    // cb(null, '../BACKEND/public/images')
-    cb(null, './public/images')
+    cb(null, '../BACKEND/public/images')
+    // cb(null, './public/images')
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname)
@@ -33,7 +35,8 @@ userRouter.post("/create", upload, async (req: Request, res: Response) => {
         .status(400)
         .json({ error: "A User with the same email already exists." });
     }
-
+    var salt = await bcrypt.genSaltSync(10);
+    var securedPassword = await bcrypt.hash(req.body.Password, salt);
     const Name = req.body.Name
     let users = await user.findOne({
       Name: Name.charAt(0).toUpperCase() + Name.slice(1),
@@ -49,10 +52,12 @@ userRouter.post("/create", upload, async (req: Request, res: Response) => {
       const data = await user.create({
         Name: Name.charAt(0).toUpperCase() + Name.slice(1),
         Email: req.body.Email,
+        Password: securedPassword,
         Number: req.body.Number,
         Image: req.file?.filename,
         Dob: req.body.Dob,
-        Status: req.body.Status
+        Status: req.body.Status,
+        IsAdmin: req.body.IsAdmin,
       });
 
       res.json(data);
@@ -64,7 +69,7 @@ userRouter.post("/create", upload, async (req: Request, res: Response) => {
 
 // Get api 
 
-userRouter.get("/", async (req: Request, res: Response) => {
+userRouter.get("/", authenticator, async (req: Request, res: Response) => {
   try {
     let users;
     let filter: any = {}
@@ -88,35 +93,37 @@ userRouter.get("/", async (req: Request, res: Response) => {
 
 userRouter.put("/update/:id", upload, async (req: Request, res: Response) => {
   try {
-      const Name = req.body.Name
+    const Name = req.body.Name
 
-      let USER = await user.findOne({ Email:req.body.Email , Status: { $ne: "2" }, _id: { $ne: req.params.id } });
+    let USER = await user.findOne({ Email: req.body.Email, Status: { $ne: "2" }, _id: { $ne: req.params.id } });
 
-      if(USER){
-        return res.status(400)
+    if (USER) {
+      return res.status(400)
         .json({ error: "A User with the same Email already exists." });
-      } else {
-        const newUser: any = {
-            Name: Name.charAt(0).toUpperCase() + Name.slice(1),
-            Email: req.body.Email,
-            Number: req.body.Number,
-            Image: req.file?.filename,
-            Dob: req.body.Dob,
-             Status: req.body. Status
-        }
-  
-        let putUser = await user.findById(req.params.id);
-        if (!putUser) {
-            return Notification.NotFound(req, res, onmessage);
-        }
-        putUser = await user.findByIdAndUpdate(req.params.id, { $set: newUser }, { new: true });
-        res.json(putUser);
+    } else {
+      const newUser: any = {
+        Name: Name.charAt(0).toUpperCase() + Name.slice(1),
+        Email: req.body.Email,
+        Number: req.body.Number,
+        Password: req.body.Password,
+        Image: req.file?.filename,
+        Dob: req.body.Dob,
+        Status: req.body.Status,
+        IsAdmin: req.body.IsAdmin,
       }
+
+      let putUser = await user.findById(req.params.id);
+      if (!putUser) {
+        return Notification.NotFound(req, res, onmessage);
+      }
+      putUser = await user.findByIdAndUpdate(req.params.id, { $set: newUser }, { new: true });
+      res.json(putUser);
+    }
 
   }
   catch (error) {
-    
-      Notification.InternalError(req, res, error);
+
+    Notification.InternalError(req, res, error);
 
   }
 });
