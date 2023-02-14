@@ -48,7 +48,7 @@ loginRouter.post("/", LoginValidate, async (req: Request, res: Response) => {
         id: user.id,
       },
     };
-    const authtoken = jwt.sign(data, "DivyLadani", { expiresIn: '10m' });
+    const authtoken = jwt.sign(data, "DivyLadani", { expiresIn: '100m' });
     res.json({ authtoken });
   } catch (error: any) {
     console.log(error.message);

@@ -28,6 +28,9 @@ const userSchema = new Schema({
     },
     IsAdmin:{
         type:Boolean,
+    },
+    menuId:{
+        type:String
     }
 })
 

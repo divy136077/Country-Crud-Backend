@@ -158,7 +158,6 @@ userRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     let putUser = await user.findById(req.params.id);
     if (!putUser) {
-      // return res.status(404).send("not found");
       return Notification.NotFound(req, res, onmessage);
     }
 
@@ -217,6 +216,39 @@ userRouter.post("/delete", async (req: Request, res: Response) => {
     Notification.InternalError(req, res, error);
   }
 });
+
+
+//menu id store
+
+userRouter.post("/menu/:id", async (req: Request, res: Response) => {
+  try {
+    const {
+      menuId
+
+    } = req.body;
+    const newUser: any = {
+      menuId: menuId,
+
+    }
+
+    let users = await user.findById(req.params.id);
+    if (!users) {
+      console.log(user);
+      return res.status(404).send("User not Found");
+      // return Error.NotFound(req, res, onmessage);
+    }
+
+    users = await user.findByIdAndUpdate(req.params.id, { $set: newUser }, { new: true });
+    res.json(user);
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).send("Internal server Error");
+    // Error.InternalError(req, res, error);
+
+  }
+});
+
 
 
 
