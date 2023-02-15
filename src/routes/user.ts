@@ -222,15 +222,13 @@ userRouter.post("/delete", async (req: Request, res: Response) => {
 
 userRouter.post("/menu/:id", async (req: Request, res: Response) => {
   try {
-    const {
-      menuId
-
-    } = req.body;
+    const menuId = req.body;
+    
     const newUser: any = {
       menuId: menuId,
-
     }
 
+    console.log(typeof menuId)
     let users = await user.findById(req.params.id);
     if (!users) {
       console.log(user);
