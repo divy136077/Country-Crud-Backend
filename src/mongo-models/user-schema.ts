@@ -30,7 +30,7 @@ const userSchema = new Schema({
         type:Boolean,
     },
     menuId:{
-        type:Array<String>
+        type:Array
     }
 })
 

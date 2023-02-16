@@ -16,7 +16,8 @@ menuRouter.get("/", async (req: Request, res: Response) => {
     }
     catch (error) {
         console.log(error);
-        res.status(500).send("Internal server Error");
+        // res.status(500).send("Internal server Error");
+        Notification.InternalError(req, res, error);
     }
 
 })
@@ -29,7 +30,8 @@ menuRouter.post("/create", async (req: Request, res: Response) => {
       });
       res.json(user);
     } catch (error) {
-      res.status(500).send("Internal Server Error");
+      // 
+      Notification.InternalError(req, res, error);
     }
   });
 
