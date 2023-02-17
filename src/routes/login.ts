@@ -24,15 +24,15 @@ loginRouter.post("/", LoginValidate, async (req: Request, res: Response) => {
 
   const { Email, Password } = req.body;
   try {
-    let user = await Login.findOne({ Email: Email });
-    if (!user) {
+    let user1 = await Login.findOne({ Email: Email });
+    if (!user1) {
       const error = "Email incorrect please check.";
       return Notification.BadRequest(req, res, error)
 
       // return res.status(400).json({ error: "Email incorrect please check  ." });
     }
 
-    const validPassword = await bcrypt.compare(Password, user.Password);
+    const validPassword = await bcrypt.compare(Password, user1.Password);
     console.log("----------------", validPassword);
 
 
@@ -45,11 +45,11 @@ loginRouter.post("/", LoginValidate, async (req: Request, res: Response) => {
 
     let data = {
       user: {
-        id: user.id,
+        id: user1.id,
       },
     };
     const authtoken = jwt.sign(data, "DivyLadani", { expiresIn: '100m' });
-    res.json({ authtoken });
+    res.send([user1,authtoken]);
   } catch (error: any) {
     console.log(error.message);
     // res.status(500).send("Internal Server Error");
