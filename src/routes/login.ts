@@ -5,6 +5,7 @@ import Login from "../mongo-models/user-schema";
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 import Notification from "../model/errorHelper";
+import authenticator from "../middleware/authenticator";
 
 
 const LoginValidate = [
@@ -56,6 +57,22 @@ loginRouter.post("/", LoginValidate, async (req: Request, res: Response) => {
     Notification.InternalError(req, res, error);
   }
 });
+
+// GetByID api 
+loginRouter.post("/getuser",authenticator,  async (req: any, res: any) => {
+  try {
+    let userid = req.user.id;
+    // console.log(userid);
+    const user = await Login.findById(userid).select("-Password");
+    user?.menuId = user?.menuId.filter(x=>id.includes(x._id)).map(x=>x.Name)
+    res.send(user);
+    console.log('hg',user?.menuId); 
+  } catch (error: any) {
+    console.log(error.message);
+    Notification.InternalError(req, res, error);
+  }
+});
+
 
 
 export default loginRouter;
