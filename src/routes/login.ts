@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 import Notification from "../model/errorHelper";
 import authenticator from "../middleware/authenticator";
+import menu from "../mongo-models/menu-master";
 
 
 const LoginValidate = [
@@ -59,12 +60,13 @@ loginRouter.post("/", LoginValidate, async (req: Request, res: Response) => {
 });
 
 // GetByID api 
-loginRouter.post("/getuser",authenticator,  async (req: any, res: any) => {
+loginRouter.get("/getuser",authenticator,  async (req: any, res: any) => {
   try {
     let userid = req.user.id;
+    const menuData = await menu.find({});
     // console.log(userid);
-    const user = await Login.findById(userid).select("-Password");
-    user?.menuId = user?.menuId.filter(x=>id.includes(x._id)).map(x=>x.Name)
+    let user = await Login.findById(userid).select("-Password");
+    user && (user.menuId = menuData.filter(x=>user?.menuId.includes(x._id)).map(x=>x.Name))
     res.send(user);
     console.log('hg',user?.menuId); 
   } catch (error: any) {
