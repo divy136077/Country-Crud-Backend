@@ -61,6 +61,8 @@ userRouter.post("/create", upload, async (req: Request, res: Response) => {
       });
 
       res.json(data);
+      console.log(data);
+      
     }
   } catch (error) {
     Notification.InternalError(req, res, error);
@@ -91,16 +93,20 @@ userRouter.get("/", authenticator, async (req: Request, res: Response) => {
 // Put (edit) api 
 
 
-userRouter.put("/update/:id", upload, async (req: Request, res: Response) => {
+userRouter.put("/update/:id", authenticator, upload, async (req: Request, res: Response) => {
   try {
     const Name = req.body.Name
 
     let USER = await user.findOne({ Email: req.body.Email, Status: { $ne: "2" }, _id: { $ne: req.params.id } });
+    // console.log(USER , req.params.id , "eee");
 
     if (USER) {
       return res.status(400)
         .json({ error: "A User with the same Email already exists." });
+        
     } else {
+      
+      
       const newUser: any = {
         Name: Name.charAt(0).toUpperCase() + Name.slice(1),
         Email: req.body.Email,
@@ -110,8 +116,8 @@ userRouter.put("/update/:id", upload, async (req: Request, res: Response) => {
         Dob: req.body.Dob,
         Status: req.body.Status,
         IsAdmin: req.body.IsAdmin,
-      }
-
+      }    
+      console.log('gg', newUser);
       let putUser = await user.findById(req.params.id);
       if (!putUser) {
         return Notification.NotFound(req, res, onmessage);
@@ -131,7 +137,7 @@ userRouter.put("/update/:id", upload, async (req: Request, res: Response) => {
 
 // update multipal selected data for status
 
-userRouter.post("/update", async (req: Request, res: Response) => {
+userRouter.post("/update", authenticator, async (req: Request, res: Response) => {
   const { data, status } = req.body;
 
 
@@ -154,9 +160,11 @@ userRouter.post("/update", async (req: Request, res: Response) => {
 });
 
 // GetByID api 
-userRouter.get("/:id", async (req: Request, res: Response) => {
+userRouter.get("/:id", authenticator, async (req: Request, res: Response) => {
   try {
     let putUser = await user.findById(req.params.id);
+    console.log('hi', putUser);
+
     if (!putUser) {
       return Notification.NotFound(req, res, onmessage);
     }
@@ -172,7 +180,7 @@ userRouter.get("/:id", async (req: Request, res: Response) => {
 })
 
 // Delete api 
-userRouter.delete("/delete/:id", async (req: Request, res: Response) => {
+userRouter.delete("/delete/:id",authenticator, async (req: Request, res: Response) => {
   try {
 
 
@@ -195,7 +203,7 @@ userRouter.delete("/delete/:id", async (req: Request, res: Response) => {
 
 // multipal selected data delete
 
-userRouter.post("/delete", async (req: Request, res: Response) => {
+userRouter.post("/delete",authenticator, async (req: Request, res: Response) => {
   const data = req.body;
 
 
@@ -223,7 +231,7 @@ userRouter.post("/delete", async (req: Request, res: Response) => {
 userRouter.post("/menu/:id", async (req: Request, res: Response) => {
   try {
     const menuId = req.body;
-    
+
     const newUser: any = {
       menuId: menuId,
     }

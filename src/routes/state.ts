@@ -2,12 +2,14 @@ import express, { Request, Response, } from 'express';
 import state from "../mongo-models/state-schema";
 export const stateRouter = express.Router();
 import Notification from "../model/errorHelper";
+import authenticator from '../middleware/authenticator';
 
 
 // Get api 
 
 stateRouter.get("/", async (req: Request, res: Response) => {
   try {
+    console.log(req)
     let states;
     let filter: any = {}
     const filters: any = req.query;
@@ -28,7 +30,7 @@ stateRouter.get("/", async (req: Request, res: Response) => {
 })
 
 // Post api 
-stateRouter.post("/create", async (req: Request, res: Response) => {
+stateRouter.post("/create",authenticator, async (req: Request, res: Response) => {
   try {
 
     const statename = req.body.StateName
@@ -58,7 +60,7 @@ stateRouter.post("/create", async (req: Request, res: Response) => {
 
 // Put (edit) api 
 
-stateRouter.put("/update/:id", async (req: Request, res: Response) => {
+stateRouter.put("/update/:id",authenticator, async (req: Request, res: Response) => {
   try {
     const {
       CountryName,
@@ -104,9 +106,10 @@ stateRouter.put("/update/:id", async (req: Request, res: Response) => {
 
 
 // GetByID api 
-stateRouter.get("/:id", async (req: Request, res: Response) => {
+stateRouter.get("/:id",authenticator, async (req: Request, res: Response) => {
+  console.log(req)
   try {
-    let user = await state.findById(req.params.id);
+    let user = await state.findById({CountryName: req.params.id});
     if (!user) {
       // return res.status(404).send("not found");
       return Notification.NotFound(req, res, onmessage);
@@ -123,7 +126,7 @@ stateRouter.get("/:id", async (req: Request, res: Response) => {
 })
 
 // update multipal selected data for status
-stateRouter.post("/update", async (req: Request, res: Response) => {
+stateRouter.post("/update",authenticator, async (req: Request, res: Response) => {
   const { data, status } = req.body;
 
 
@@ -146,7 +149,7 @@ stateRouter.post("/update", async (req: Request, res: Response) => {
 });
 
 // Delete api 
-stateRouter.delete("/delete/:id", async (req: Request, res: Response) => {
+stateRouter.delete("/delete/:id",authenticator, async (req: Request, res: Response) => {
   try {
 
     const newUser: any = {
@@ -168,7 +171,7 @@ stateRouter.delete("/delete/:id", async (req: Request, res: Response) => {
 
 // multipal selected data delete
 
-stateRouter.post("/delete", async (req: Request, res: Response) => {
+stateRouter.post("/delete",authenticator, async (req: Request, res: Response) => {
   const data = req.body;
 
 

@@ -1,4 +1,5 @@
 import express, { Request, Response, } from 'express';
+import authenticator from '../middleware/authenticator';
 export const cityRouter = express.Router();
 import Notification from "../model/errorHelper";
 import city from '../mongo-models/city-schema';
@@ -6,7 +7,7 @@ import city from '../mongo-models/city-schema';
 
 // Get api 
 
-cityRouter.get("/", async (req: Request, res: Response) => {
+cityRouter.get("/",authenticator, async (req: Request, res: Response) => {
   try {
     let citys;
     const filters: any = req.query;
@@ -28,7 +29,7 @@ cityRouter.get("/", async (req: Request, res: Response) => {
 })
 
 // Post api 
-cityRouter.post("/create", async (req: Request, res: Response) => {
+cityRouter.post("/create",authenticator, async (req: Request, res: Response) => {
   try {
     const CityName = req.body.CityName
     let users = await city.findOne({
@@ -58,7 +59,7 @@ cityRouter.post("/create", async (req: Request, res: Response) => {
 
 // Put (edit) api 
 
-cityRouter.put("/update/:id", async (req: Request, res: Response) => {
+cityRouter.put("/update/:id",authenticator, async (req: Request, res: Response) => {
   try {
     const {
       CountryName,
@@ -101,7 +102,7 @@ cityRouter.put("/update/:id", async (req: Request, res: Response) => {
   }
 });
 // update multipal selected data status for status
-cityRouter.post("/update", async (req: Request, res: Response) => {
+cityRouter.post("/update",authenticator, async (req: Request, res: Response) => {
   const {
     data,
     status,
@@ -124,7 +125,7 @@ cityRouter.post("/update", async (req: Request, res: Response) => {
 })
 
 // GetByID api 
-cityRouter.get("/:id", async (req: Request, res: Response) => {
+cityRouter.get("/:id",authenticator, async (req: Request, res: Response) => {
   try {
     let user = await city.findById(req.params.id);
     if (!user) {
@@ -143,7 +144,7 @@ cityRouter.get("/:id", async (req: Request, res: Response) => {
 })
 
 // Delete api 
-cityRouter.delete("/delete/:id", async (req: Request, res: Response) => {
+cityRouter.delete("/delete/:id",authenticator, async (req: Request, res: Response) => {
   try {
     const newUser: any = {
       Status: "2"
@@ -164,7 +165,7 @@ cityRouter.delete("/delete/:id", async (req: Request, res: Response) => {
 
 // multipal selected data delete
 
-cityRouter.post("/delete", async (req: Request, res: Response) => {
+cityRouter.post("/delete",authenticator, async (req: Request, res: Response) => {
   const data = req.body;
 
 

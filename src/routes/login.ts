@@ -18,10 +18,9 @@ const LoginValidate = [
 loginRouter.post("/", LoginValidate, async (req: Request, res: Response) => {
 
   const errors = validationResult(req);
-  if (!errors.isEmpty()) 
-  {
+  if (!errors.isEmpty()) {
     // return res.status(400).json({ errors: errors.array() });
-    return Notification.BadRequest(req, res,{ errors: errors.array() })
+    return Notification.BadRequest(req, res, { errors: errors.array() })
   }
 
   const { Email, Password } = req.body;
@@ -51,7 +50,9 @@ loginRouter.post("/", LoginValidate, async (req: Request, res: Response) => {
       },
     };
     const authtoken = jwt.sign(data, "DivyLadani", { expiresIn: '100m' });
-    res.send([user1,authtoken]);
+    res.send([user1, authtoken]);
+    // console.log('ffe' , user1);
+    
   } catch (error: any) {
     console.log(error.message);
     // res.status(500).send("Internal Server Error");
@@ -59,21 +60,23 @@ loginRouter.post("/", LoginValidate, async (req: Request, res: Response) => {
   }
 });
 
+
 // GetByID api 
 loginRouter.get("/getuser",authenticator,  async (req: any, res: any) => {
   try {
     let userid = req.user.id;
     const menuData = await menu.find({});
     // console.log(userid);
-    let user = await Login.findById(userid).select("-Password");
+    let user = await Login.findById(userid);
     user && (user.menuId = menuData.filter(x=>user?.menuId.includes(x._id)).map(x=>x.Name))
-    res.send(user);
-    console.log('hg',user?.menuId); 
+    res.send(user?.menuId);
+
   } catch (error: any) {
     console.log(error.message);
     Notification.InternalError(req, res, error);
   }
 });
+
 
 
 

@@ -2,10 +2,11 @@ import express, { Request, Response } from "express";
 import country from "../mongo-models/country-schema";
 export const router = express.Router();
 import Notification from "../model/errorHelper";
+import authenticator from "../middleware/authenticator";
 
 
 // Post api 
-router.post("/create", async (req: Request, res: Response) => {
+router.post("/create",authenticator, async (req: Request, res: Response) => {
   try {
     const name = req.body.Name;
 
@@ -35,7 +36,7 @@ router.post("/create", async (req: Request, res: Response) => {
 
 // Get api 
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/",authenticator,  async (req: Request, res: Response) => {
   try {
     let countrys;
     let filter: any = {}
@@ -57,7 +58,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 // Put (edit) api 
 
-router.put("/update/:id", async (req: Request, res: Response) => {
+router.put("/update/:id",authenticator, async (req: Request, res: Response) => {
   try {
     const { Name, Code, Status, id } = req.body;
 
@@ -95,7 +96,7 @@ router.put("/update/:id", async (req: Request, res: Response) => {
 });
 
 // update multipal selected data for status 
-router.post("/update", async (req: Request, res: Response) => {
+router.post("/update",authenticator, async (req: Request, res: Response) => {
   const { data, status } = req.body;
 
 
@@ -118,7 +119,7 @@ router.post("/update", async (req: Request, res: Response) => {
 });
 
 // GetByID api 
-router.get("/:id", async (req: Request, res: Response) => {
+router.get("/:id",authenticator, async (req: Request, res: Response) => {
   try {
     let user = await country.findById(req.params.id);
     if (!user) {
@@ -131,7 +132,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 });
 
 // Delete api
-router.delete("/delete/:id", async (req: Request, res: Response) => {
+router.delete("/delete/:id",authenticator, async (req: Request, res: Response) => {
   try {
     const newUser: any = {
       Status: "2",
@@ -153,7 +154,7 @@ router.delete("/delete/:id", async (req: Request, res: Response) => {
 
 // multipal selected data delete
 
-router.post("/delete", async (req: Request, res: Response) => {
+router.post("/delete",authenticator, async (req: Request, res: Response) => {
   const data = req.body;
 
 
